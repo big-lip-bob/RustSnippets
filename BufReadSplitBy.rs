@@ -1,4 +1,4 @@
-
+use std::io::{BufRead, Result as IOResult, ErrorKind::{Interrupted, InvalidData}, Error as IOError};
 
 pub fn read_until_bytes<R: BufRead + ?Sized>(
     r: &mut R,
@@ -33,7 +33,6 @@ pub fn read_until_bytes<R: BufRead + ?Sized>(
     };
 }
 
-#[derive(Debug)]
 pub struct SplitBufReadBy<'a,B> {
     pat: &'a[u8],
     buf: B,
