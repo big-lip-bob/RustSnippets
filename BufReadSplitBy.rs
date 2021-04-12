@@ -79,7 +79,7 @@ pub mod tests {
         assert_eq!(input,vec!["Hello","World","Minus","Plus"])
     }
     #[test] pub fn split_by_iter_test3() {
-        let input: Vec<String> = BufReader::new("Hello-----World---Hyphen--And-Newline---Last-match".as_bytes()).split_by_bytes(b"---").map(|line| line.unwrap()).collect();
-        assert_eq!(input,vec!["Hello","--World","Hyphen--And-Newline","Last-match"])
+        let input: Vec<String> = BufReader::new("Hello------World---Hyphen--And-Newline-----Last-match".as_bytes()).split_by_bytes(b"---").map(|line| line.unwrap()).collect();
+        assert_eq!(input,vec!["Hello","","World","Hyphen--And-Newline","--Last-match"])
     }
 }
