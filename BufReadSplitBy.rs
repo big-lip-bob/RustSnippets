@@ -42,8 +42,6 @@ pub trait SplitByBytes: BufRead {
 
 }
 
-impl<B: BufRead + ?Sized> SplitByBytes for B { }
-
 pub struct SplitBufReadByBytesIter<'a,B: BufRead> {
     pattern : &'a[u8],
     buf: B
