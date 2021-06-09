@@ -68,20 +68,20 @@ impl<B: BufRead> Iterator for SplitBufReadByBytesIter<'_,B> {
 #[cfg(test)]
 pub mod tests {
     use super::SplitByBytes;
-	use std::io::BufReader;
+    use std::io::BufReader;
 
-	#[test] pub fn split_by_iter_test1() {
-        let input: Vec<String> = BufReader::new("Hello-World-Hyphen".as_bytes()).split_by_bytes(b"-").map(|line| line.unwrap()).collect();
-		assert_eq!(input,vec!["Hello","World","Hyphen"])
-	}
+    #[test] pub fn split_by_iter_test1() {
+    let input: Vec<String> = BufReader::new("Hello-World-Hyphen".as_bytes()).split_by_bytes(b"-").map(|line| line.unwrap()).collect();
+    	assert_eq!(input,vec!["Hello","World","Hyphen"])
+    }
 
-	#[test] pub fn split_by_iter_test2() {
-        let input: Vec<String> = BufReader::new("Hello-+World-+Minus-+Plus".as_bytes()).split_by_bytes(b"-+").map(|line| line.unwrap()).collect();
-		assert_eq!(input,vec!["Hello","World","Minus","Plus"])
-	}
+    #[test] pub fn split_by_iter_test2() {
+    let input: Vec<String> = BufReader::new("Hello-+World-+Minus-+Plus".as_bytes()).split_by_bytes(b"-+").map(|line| line.unwrap()).collect();
+    	assert_eq!(input,vec!["Hello","World","Minus","Plus"])
+    }
 
-	#[test] pub fn split_by_iter_test3() {
-		let input: Vec<String> = BufReader::new("Hello------World---Hyphen--And-Newline-----Last-match".as_bytes()).split_by_bytes(b"---").map(|line| line.unwrap()).collect();
-		assert_eq!(input,vec!["Hello","","World","Hyphen--And-Newline","--Last-match"])
-	}
+    #[test] pub fn split_by_iter_test3() {
+    	let input: Vec<String> = BufReader::new("Hello------World---Hyphen--And-Newline-----Last-match".as_bytes()).split_by_bytes(b"---").map(|line| line.unwrap()).collect();
+    	assert_eq!(input,vec!["Hello","","World","Hyphen--And-Newline","--Last-match"])
+    }
 }
