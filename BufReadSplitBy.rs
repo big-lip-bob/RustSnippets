@@ -6,8 +6,8 @@ pub trait SplitByBytes: BufRead {
         &mut self,
         delim: &[u8],
         buffer: &mut Vec<u8>,
-    ) -> IOResult<(usize,usize)> { // (data_read, delim_bytes_tail_size)
-        assert!(!delim.is_empty(),"Cannot have an empty delimiter");
+    ) -> IOResult<(usize, usize)> { // (data_read, delim_bytes_tail_size)
+        assert!(!delim.is_empty(), "Cannot have an empty delimiter");
         let mut index = 0;
         let mut total_read = 0;
         loop {
@@ -38,11 +38,11 @@ pub trait SplitByBytes: BufRead {
         }
     }
     
-    fn split_by_bytes(self,pattern: &[u8]) -> SplitBufReadByBytesIter<'_,Self> where Self: Sized { SplitBufReadByBytesIter { buf: self, pattern } }
+    fn split_by_bytes(self, pattern: &[u8]) -> SplitBufReadByBytesIter<'_, Self> where Self: Sized { SplitBufReadByBytesIter { buf: self, pattern } }
 
 }
 
-pub struct SplitBufReadByBytesIter<'a,B: BufRead> {
+pub struct SplitBufReadByBytesIter<'a, B: BufRead> {
     pattern : &'a[u8],
     buf: B
 }
@@ -53,10 +53,10 @@ impl<B: BufRead> Iterator for SplitBufReadByBytesIter<'_,B> {
     fn next(&mut self) -> Option<Self::Item> {
         let mut buf = Vec::new();
         match self.buf.read_until_bytes(self.pattern, &mut buf) {
-            Ok((0,_)) => None,
+            Ok((0, _)) => None,
             Err(err) => Some(Err(err)),
-            Ok((_len,pattern_tail)) => {
-                if pattern_tail == self.pattern.len() { buf.truncate(buf.len()-self.pattern.len()); }
+            Ok((_len, pattern_tail)) => {
+                if pattern_tail == self.pattern.len() { buf.truncate(buf.len() - self.pattern.len()); }
                 Some(String::from_utf8(buf).map_err(|_from_uft8_error| IOError::new(InvalidData, "stream did not contain valid UTF-8")))
             }
         }
@@ -69,17 +69,17 @@ pub mod tests {
     use std::io::BufReader;
 
     #[test] pub fn split_by_iter_test1() {
-    let input: Vec<String> = BufReader::new("Hello-World-Hyphen".as_bytes()).split_by_bytes(b"-").map(|line| line.unwrap()).collect();
-    	assert_eq!(input,vec!["Hello","World","Hyphen"])
+    let input: Vec<String> = BufReader::new(b"Hello-World-Hyphen").split_by_bytes(b"-").map(|line| line.unwrap()).collect();
+    	assert_eq!(input, vec!["Hello", "World", "Hyphen"])
     }
 
     #[test] pub fn split_by_iter_test2() {
-    let input: Vec<String> = BufReader::new("Hello-+World-+Minus-+Plus".as_bytes()).split_by_bytes(b"-+").map(|line| line.unwrap()).collect();
-    	assert_eq!(input,vec!["Hello","World","Minus","Plus"])
+    let input: Vec<String> = BufReader::new(b"Hello-+World-+Minus-+Plus").split_by_bytes(b"-+").map(|line| line.unwrap()).collect();
+    	assert_eq!(input, vec!["Hello", "World", "Minus", "Plus"])
     }
 
     #[test] pub fn split_by_iter_test3() {
-    	let input: Vec<String> = BufReader::new("Hello------World---Hyphen--And-Newline-----Last-match".as_bytes()).split_by_bytes(b"---").map(|line| line.unwrap()).collect();
-    	assert_eq!(input,vec!["Hello","","World","Hyphen--And-Newline","--Last-match"])
+    	let input: Vec<String> = BufReader::new(b"Hello------World---Hyphen--And-Newline-----Last-match").split_by_bytes(b"---").map(|line| line.unwrap()).collect();
+    	assert_eq!(input, vec!["Hello", "", "World", "Hyphen--And-Newline", "--Last-match"])
     }
 }
