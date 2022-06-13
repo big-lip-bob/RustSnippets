@@ -28,7 +28,7 @@ pub trait SplitByBytes: BufRead {
                             if index == delim.len() { break (sub_read, true) }
                         } else { index = 0; }
                     },
-                    None => break (sub_read, true)
+                    None => break (sub_read, false)
                 };
             };
             buffer.extend_from_slice(&available[..read_count]);
